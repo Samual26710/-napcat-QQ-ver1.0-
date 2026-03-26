@@ -1,0 +1,17 @@
+- [x] Verify that the copilot-instructions.md file in the .github directory is created.
+- [x] Clarify Project Requirements
+- [x] Scaffold the Project
+- [x] Customize the Project
+- [x] Install Required Extensions
+- [x] Compile the Project
+- [x] Create and Run Task
+- [x] Launch the Project
+- [x] Ensure Documentation is Complete
+
+- Project type: Python QQ chatbot using NoneBot2, OneBot V11, NapCat, and OpenAI-compatible LLM APIs.
+- Scaffolded a minimal runnable structure in the current folder.
+- Added bot entrypoint, chat plugin, environment template, install script, and startup script.
+- No VS Code extensions were required by project setup info.
+- README was added with setup, NapCat configuration, and local launch steps.
+- Installed Python 3.11, created `.venv`, installed dependencies, and generated `.env`.
+- Added a VS Code task named `Run QQ Bot` and verified the bot can start on `127.0.0.1:8080`.
