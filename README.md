@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 本地 QQ 大模型机器人
 
 这是一个基于 NoneBot2、OneBot V11 和 OpenAI Python SDK 的本地 QQ 聊天机器人最小可运行项目，适合在 Windows 上配合 NapCat 使用。
@@ -293,3 +294,6 @@ NapCat 登录说明:
 - 增加管理员命令
 - 增加敏感词和速率限制
 - 增加日志轮转和异常重连
+=======
+# -napcat-QQ-ver1.0-
+>>>>>>> d0510c4bd9ab337c5d2eeca381e09ad3b48539eb
