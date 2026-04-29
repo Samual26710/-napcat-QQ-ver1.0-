@@ -5,6 +5,7 @@ from urllib.parse import quote
 from xml.etree import ElementTree as ET
 
 import httpx
+import asyncio
 from nonebot import logger
 
 
@@ -30,10 +31,21 @@ class NetworkTool(Protocol):
 
 async def fetch_json(url: str, params: dict[str, str], timeout_seconds: float) -> dict:
     timeout = httpx.Timeout(timeout_seconds)
-    async with httpx.AsyncClient(timeout=timeout) as client_http:
-        response = await client_http.get(url, params=params)
-        response.raise_for_status()
-        return response.json()
+    attempts = 3
+    backoff = 0.5
+    last_exc: Exception | None = None
+    for attempt in range(1, attempts + 1):
+        try:
+            async with httpx.AsyncClient(timeout=timeout) as client_http:
+                response = await client_http.get(url, params=params)
+                response.raise_for_status()
+                return response.json()
+        except Exception as exc:
+            last_exc = exc
+            logger.warning("fetch_json attempt %s failed for %s: %s", attempt, url, exc)
+            if attempt == attempts:
+                raise
+            await asyncio.sleep(backoff * (2 ** (attempt - 1)))
 
 
 async def fetch_text(url: str, params: dict[str, str], timeout_seconds: float) -> str:
@@ -41,10 +53,19 @@ async def fetch_text(url: str, params: dict[str, str], timeout_seconds: float) -
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0 Safari/537.36"
     }
-    async with httpx.AsyncClient(timeout=timeout, headers=headers, follow_redirects=True) as client_http:
-        response = await client_http.get(url, params=params)
-        response.raise_for_status()
-        return response.text
+    attempts = 3
+    backoff = 0.5
+    for attempt in range(1, attempts + 1):
+        try:
+            async with httpx.AsyncClient(timeout=timeout, headers=headers, follow_redirects=True) as client_http:
+                response = await client_http.get(url, params=params)
+                response.raise_for_status()
+                return response.text
+        except Exception as exc:
+            logger.warning("fetch_text attempt %s failed for %s: %s", attempt, url, exc)
+            if attempt == attempts:
+                raise
+            await asyncio.sleep(backoff * (2 ** (attempt - 1)))
 
 
 def normalize_whitespace(value: str) -> str:
